@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { Request, Response } from 'express';
 import { CreateCustomerDto } from './dto';
@@ -14,6 +14,7 @@ export class CustomersController {
         return this.customerService.getCustomers();
     }
 
+    // normal express way
     @Get(':id')
     getCustomer( @Param('id', ParseIntPipe) id:number, @Req() req: Request, @Res() res: Response){
         
@@ -25,6 +26,7 @@ export class CustomersController {
         }
     }
 
+    //nestjs way
     @Get('/search/:id')
     searchCustomerById(
         @Param('id', ParseIntPipe)
@@ -39,6 +41,7 @@ export class CustomersController {
 
 
     @Post('create')
+    @UsePipes(ValidationPipe) 
     createCustomer(@Body() createCustomerDto: CreateCustomerDto){
         this.customerService.createCustomer(createCustomerDto)
     }
